@@ -3,131 +3,282 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نموذج تقييم الأعمال - إتحاد</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Business Valuation Model</title>
+
+    <!-- خط Tajawal -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- XLSX.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <!-- ملف التنسيقات -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>نموذج تقييم الأعمال - شركة إتحاد</h1>
-            <p>أدخل البيانات التاريخية (2022-2024) وسيتم حساب التوقعات المستقبلية تلقائياً</p>
+            <div class="language-switcher">
+                <button class="lang-btn" onclick="toggleLanguage()">English</button>
+            </div>
+            <h1 id="header-title">نموذج تقييم الأعمال</h1>
+            <p id="header-description">أدخل البيانات التاريخية (3 سنوات) وسيتم حساب التوقعات المستقبلية (5 سنوات) تلقائياً</p>
         </header>
 
         <!-- قسم إدخال البيانات -->
         <section id="input-section" class="section">
-            <h2>إدخال البيانات التاريخية</h2>
+            <h2 id="input-title">إدخال البيانات التاريخية</h2>
             
-            <!-- التنقل بين أنواع البيانات -->
             <div class="tabs">
-                <button class="tab-button active" onclick="openTab('revenue-tab')">الإيرادات</button>
-                <button class="tab-button" onclick="openTab('costs-tab')">التكاليف</button>
-                <button class="tab-button" onclick="openTab('assets-tab')">الأصول والالتزامات</button>
-                <button class="tab-button" onclick="openTab('assumptions-tab')">الافتراضات</button>
+                <button class="tab-button active" onclick="openTab(event, 'revenue-tab')" id="revenue-tab-btn">الإيرادات</button>
+                <button class="tab-button" onclick="openTab(event, 'costs-tab')" id="costs-tab-btn">التكاليف</button>
+                <button class="tab-button" onclick="openTab(event, 'assets-tab')" id="assets-tab-btn">الأصول والالتزامات</button>
+                <button class="tab-button" onclick="openTab(event, 'assumptions-tab')" id="assumptions-tab-btn">الافتراضات</button>
             </div>
 
             <!-- نموذج الإيرادات -->
             <div id="revenue-tab" class="tab-content active">
-                <h3>بيانات الإيرادات والإنتاج</h3>
+                <h3 id="revenue-title">بيانات الإيرادات والإنتاج</h3>
                 <div class="input-grid">
                     <div class="input-group">
-                        <label>الإيرادات (ريال سعودي)</label>
+                        <label id="revenue-label">الإيرادات (ريال سعودي)</label>
                         <div class="year-inputs">
-                            <input type="number" id="revenue-2022" placeholder="2022">
-                            <input type="number" id="revenue-2023" placeholder="2023">
-                            <input type="number" id="revenue-2024" placeholder="2024">
+                            <input type="number" id="revenue-1" placeholder="السنة 1">
+                            <input type="number" id="revenue-2" placeholder="السنة 2">
+                            <input type="number" id="revenue-3" placeholder="السنة 3">
                         </div>
                     </div>
                     
                     <div class="input-group">
-                        <label>تكلفة الإيرادات (ريال سعودي)</label>
+                        <label id="cost-of-revenue-label">تكلفة الإيرادات (ريال سعودي)</label>
                         <div class="year-inputs">
-                            <input type="number" id="cost-of-revenue-2022" placeholder="2022">
-                            <input type="number" id="cost-of-revenue-2023" placeholder="2023">
-                            <input type="number" id="cost-of-revenue-2024" placeholder="2024">
+                            <input type="number" id="cost-of-revenue-1" placeholder="السنة 1">
+                            <input type="number" id="cost-of-revenue-2" placeholder="السنة 2">
+                            <input type="number" id="cost-of-revenue-3" placeholder="السنة 3">
                         </div>
                     </div>
 
                     <div class="input-group">
-                        <label>المصاريف العامة والإدارية (ريال سعودي)</label>
+                        <label id="admin-expenses-label">المصاريف العامة والإدارية (ريال سعودي)</label>
                         <div class="year-inputs">
-                            <input type="number" id="admin-expenses-2022" placeholder="2022">
-                            <input type="number" id="admin-expenses-2023" placeholder="2023">
-                            <input type="number" id="admin-expenses-2024" placeholder="2024">
+                            <input type="number" id="admin-expenses-1" placeholder="السنة 1">
+                            <input type="number" id="admin-expenses-2" placeholder="السنة 2">
+                            <input type="number" id="admin-expenses-3" placeholder="السنة 3">
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- أقسام أخرى سيتم إضافتها -->
+            <!-- نموذج التكاليف -->
             <div id="costs-tab" class="tab-content">
-                <h3>بيانات التكاليف التفصيلية</h3>
-                <!-- محتوى التكاليف -->
+                <h3 id="costs-title">بيانات التكاليف التفصيلية</h3>
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label id="operating-costs-label">تكاليف التشغيل (ريال سعودي)</label>
+                        <div class="year-inputs">
+                            <input type="number" id="operating-costs-1" placeholder="السنة 1">
+                            <input type="number" id="operating-costs-2" placeholder="السنة 2">
+                            <input type="number" id="operating-costs-3" placeholder="السنة 3">
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label id="marketing-costs-label">تكاليف التسويق (ريال سعودي)</label>
+                        <div class="year-inputs">
+                            <input type="number" id="marketing-costs-1" placeholder="السنة 1">
+                            <input type="number" id="marketing-costs-2" placeholder="السنة 2">
+                            <input type="number" id="marketing-costs-3" placeholder="السنة 3">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label id="rd-costs-label">تكاليف البحث والتطوير (ريال سعودي)</label>
+                        <div class="year-inputs">
+                            <input type="number" id="rd-costs-1" placeholder="السنة 1">
+                            <input type="number" id="rd-costs-2" placeholder="السنة 2">
+                            <input type="number" id="rd-costs-3" placeholder="السنة 3">
+                        </div>
+                    </div>
+                </div>
             </div>
 
+            <!-- نموذج الأصول والالتزامات -->
             <div id="assets-tab" class="tab-content">
-                <h3>بيانات الأصول والالتزامات</h3>
-                <!-- محتوى الأصول -->
+                <h3 id="assets-title">بيانات الأصول والالتزامات</h3>
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label id="fixed-assets-label">الأصول الثابتة (ريال سعودي)</label>
+                        <div class="year-inputs">
+                            <input type="number" id="fixed-assets-1" placeholder="السنة 1">
+                            <input type="number" id="fixed-assets-2" placeholder="السنة 2">
+                            <input type="number" id="fixed-assets-3" placeholder="السنة 3">
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label id="current-assets-label">الأصول المتداولة (ريال سعودي)</label>
+                        <div class="year-inputs">
+                            <input type="number" id="current-assets-1" placeholder="السنة 1">
+                            <input type="number" id="current-assets-2" placeholder="السنة 2">
+                            <input type="number" id="current-assets-3" placeholder="السنة 3">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label id="current-liabilities-label">الالتزامات المتداولة (ريال سعودي)</label>
+                        <div class="year-inputs">
+                            <input type="number" id="current-liabilities-1" placeholder="السنة 1">
+                            <input type="number" id="current-liabilities-2" placeholder="السنة 2">
+                            <input type="number" id="current-liabilities-3" placeholder="السنة 3">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label id="long-term-liabilities-label">الالتزامات طويلة الأجل (ريال سعودي)</label>
+                        <div class="year-inputs">
+                            <input type="number" id="long-term-liabilities-1" placeholder="السنة 1">
+                            <input type="number" id="long-term-liabilities-2" placeholder="السنة 2">
+                            <input type="number" id="long-term-liabilities-3" placeholder="السنة 3">
+                        </div>
+                    </div>
+                </div>
             </div>
 
+            <!-- نموذج الافتراضات -->
             <div id="assumptions-tab" class="tab-content">
-                <h3>الافتراضات المستقبلية</h3>
-                <!-- محتوى الافتراضات -->
+                <h3 id="assumptions-title">الافتراضات المستقبلية</h3>
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label id="revenue-growth-label">نمو الإيرادات (%)</label>
+                        <input type="number" id="revenue-growth" placeholder="5" value="5">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label id="cost-of-revenue-percent-label">نسبة تكلفة الإيرادات (%)</label>
+                        <input type="number" id="cost-of-revenue-percent" placeholder="60" value="60">
+                    </div>
+
+                    <div class="input-group">
+                        <label id="admin-expenses-percent-label">نسبة المصاريف الإدارية (%)</label>
+                        <input type="number" id="admin-expenses-percent" placeholder="15" value="15">
+                    </div>
+
+                    <div class="input-group">
+                        <label id="tax-rate-label">نسبة الضرائب (%)</label>
+                        <input type="number" id="tax-rate" placeholder="20" value="20">
+                    </div>
+                </div>
             </div>
 
-            <button class="calculate-btn" onclick="calculateProjections()">حساب التوقعات</button>
+            <div class="button-group">
+                <button class="calculate-btn" onclick="calculateProjections()" id="calculate-btn">حساب التوقعات</button>
+                <button class="reset-btn" onclick="resetForm()" id="reset-btn">مسح النموذج</button>
+            </div>
         </section>
 
         <!-- قسم النتائج -->
         <section id="results-section" class="section" style="display: none;">
-            <h2>النتائج والتوقعات</h2>
+            <h2 id="results-title">النتائج والتوقعات</h2>
             
             <div class="results-tabs">
-                <button class="result-tab active" onclick="openResultTab('profit-loss-tab')">قائمة الدخل</button>
-                <button class="result-tab" onclick="openResultTab('balance-sheet-tab')">الميزانية العمومية</button>
-                <button class="result-tab" onclick="openResultTab('cash-flow-tab')">التدفق النقدي</button>
-                <button class="result-tab" onclick="openResultTab('charts-tab')">الرسوم البيانية</button>
+                <button class="result-tab active" onclick="openResultTab(event, 'profit-loss-tab')" id="profit-tab-btn">قائمة الدخل</button>
+                <button class="result-tab" onclick="openResultTab(event, 'balance-sheet-tab')" id="balance-tab-btn">الميزانية العمومية</button>
+                <button class="result-tab" onclick="openResultTab(event, 'cash-flow-tab')" id="cashflow-tab-btn">التدفق النقدي</button>
+                <button class="result-tab" onclick="openResultTab(event, 'charts-tab')" id="charts-tab-btn">الرسوم البيانية</button>
             </div>
 
             <!-- قائمة الدخل -->
             <div id="profit-loss-tab" class="result-content active">
-                <table class="results-table">
-                    <thead>
-                        <tr>
-                            <th>البند</th>
-                            <th>2022</th>
-                            <th>2023</th>
-                            <th>2024</th>
-                            <th>2025 (متوقع)</th>
-                            <th>2026 (متوقع)</th>
-                            <th>2027 (متوقع)</th>
-                            <th>2028 (متوقع)</th>
-                            <th>2029 (متوقع)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="profit-loss-body">
-                        <!-- سيتم ملؤه بالبيانات -->
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="results-table">
+                        <thead>
+                            <tr>
+                                <th id="item-header">البند</th>
+                                <th id="year-1-header">السنة 1</th>
+                                <th id="year-2-header">السنة 2</th>
+                                <th id="year-3-header">السنة 3</th>
+                                <th id="year-4-header">السنة 4 (متوقع)</th>
+                                <th id="year-5-header">السنة 5 (متوقع)</th>
+                                <th id="year-6-header">السنة 6 (متوقع)</th>
+                                <th id="year-7-header">السنة 7 (متوقع)</th>
+                                <th id="year-8-header">السنة 8 (متوقع)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="profit-loss-body"></tbody>
+                    </table>
+                </div>
             </div>
 
-            <!-- أقسام النتائج الأخرى -->
+            <!-- الميزانية العمومية -->
             <div id="balance-sheet-tab" class="result-content">
-                <!-- الميزانية العمومية -->
+                <div class="table-responsive">
+                    <table class="results-table">
+                        <thead>
+                            <tr>
+                                <th id="balance-item-header">البند</th>
+                                <th id="year-1-header-bal">السنة 1</th>
+                                <th id="year-2-header-bal">السنة 2</th>
+                                <th id="year-3-header-bal">السنة 3</th>
+                                <th id="year-4-header-bal">السنة 4 (متوقع)</th>
+                                <th id="year-5-header-bal">السنة 5 (متوقع)</th>
+                                <th id="year-6-header-bal">السنة 6 (متوقع)</th>
+                                <th id="year-7-header-bal">السنة 7 (متوقع)</th>
+                                <th id="year-8-header-bal">السنة 8 (متوقع)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="balance-sheet-body"></tbody>
+                    </table>
+                </div>
             </div>
 
+            <!-- التدفق النقدي -->
             <div id="cash-flow-tab" class="result-content">
-                <!-- التدفق النقدي -->
+                <div class="table-responsive">
+                    <table class="results-table">
+                        <thead>
+                            <tr>
+                                <th id="cashflow-item-header">البند</th>
+                                <th id="year-1-header-cf">السنة 1</th>
+                                <th id="year-2-header-cf">السنة 2</th>
+                                <th id="year-3-header-cf">السنة 3</th>
+                                <th id="year-4-header-cf">السنة 4 (متوقع)</th>
+                                <th id="year-5-header-cf">السنة 5 (متوقع)</th>
+                                <th id="year-6-header-cf">السنة 6 (متوقع)</th>
+                                <th id="year-7-header-cf">السنة 7 (متوقع)</th>
+                                <th id="year-8-header-cf">السنة 8 (متوقع)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cash-flow-body"></tbody>
+                    </table>
+                </div>
             </div>
 
+            <!-- الرسوم البيانية -->
             <div id="charts-tab" class="result-content">
-                <canvas id="revenueChart" width="400" height="200"></canvas>
-                <canvas id="profitChart" width="400" height="200"></canvas>
+                <div class="chart-container">
+                    <canvas id="revenueChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <canvas id="profitChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <canvas id="cashFlowChart"></canvas>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button class="export-btn" onclick="exportToExcel()" id="export-btn">تصدير إلى Excel</button>
             </div>
         </section>
     </div>
 
-    <script src="data.js"></script>
+    <footer>
+        <p id="footer-text">نموذج تقييم الأعمال ©2025 | تم تطويره بواسطة أ. عمار حسن</p>
+    </footer>
+
+    <!-- ملف السكربت -->
     <script src="script.js"></script>
 </body>
 </html>
